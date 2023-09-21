@@ -38,7 +38,7 @@ const loginController = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
     if (!user) {
-      res.status(400).send({
+      res.status(404).send({
         success: false,
         message: "User Not Valid",
         error,
@@ -55,9 +55,9 @@ const loginController = async (req, res) => {
       expiresIn: "1d",
     });
     return res.status(200).send({
-      success: false,
-      message: "Error in login API",
-      error,
+      success: true,
+      message: "Login Succesfully",
+      token,
       user,
     });
   } catch (error) {
