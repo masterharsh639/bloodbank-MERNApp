@@ -8,7 +8,7 @@ const registerController = async (req, res) => {
     const existingUser = await userModel.findOne({ email: req.body.email });
     if (existingUser) {
       return res.status(200).json({
-        message: "User Already Exits",
+        message: "User Already Exist",
         success: false,
       });
     }
@@ -44,7 +44,10 @@ const loginController = async (req, res) => {
         error,
       });
     }
-    const comparePassword = await bcrypt.compare(req.body.password, user.password);
+    const comparePassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     if (!comparePassword) {
       res.status(500).send({
         success: false,
@@ -71,4 +74,25 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController };
+const currentUserController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    if (user) {
+      res.status(200).send({
+        success: true,
+        message: "User found",
+        user,
+      });
+    }
+  } catch (error) {
+    if (error) {
+      res.status(404).send({
+        success: false,
+        message: "Invalid",
+        error,
+      });
+    }
+  }
+};
+
+module.exports = { registerController, loginController, currentUserController };
